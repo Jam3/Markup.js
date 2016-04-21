@@ -759,6 +759,30 @@ var options = {
 var result = Mark.up(template, context, options);
 ```
 
+## Undefined variables
+
+By default, if Markup does not find the specified variable, it will return `???`.
+You can modify this by setting the replacer variable. The possible values are as
+follows:
+`false` default, replaces with ???
+`true` replaces with the original tag
+`[Custom String]` replaces with the string specified 
+
+``` javascript
+Mark.replacer = true;
+```
+
+Or, via the `options` argument:
+
+``` javascript
+var options = {
+    replacer: ''
+};
+
+var result = Mark.up(template, context, options);
+```
+
+
 ## Logging
 
 You can log any variable to the console for debugging purposes with the `log` 

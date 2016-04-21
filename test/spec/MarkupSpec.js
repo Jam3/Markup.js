@@ -36,6 +36,7 @@ describe("Markup core spec", function () {
     beforeEach(function () {
         Mark.delimiter = ">";
         Mark.compact = false;
+        Mark.replacer = false;
         template = "";
         result = "";
     });
@@ -90,6 +91,32 @@ describe("Markup core spec", function () {
         template = "<adam>\n   \n   \n</mark>";
         result = Mark.up(template, {}, { "compact": false });
         expect(result).toEqual("<adam>\n   \n   \n</mark>");
+    });
+
+    it("replacer option", function () {
+        Mark.replacer = false;
+
+        template = "{{test}}";
+        result = Mark.up(template, {});
+        expect(result).toEqual("???");
+
+        Mark.replacer = true;
+
+        template = "{{test}}";
+        result = Mark.up(template, {});
+        expect(result).toEqual("{{test}}");
+
+        Mark.replacer = '';
+
+        template = "{{test}}";
+        result = Mark.up(template, {});
+        expect(result).toEqual('');
+
+        Mark.replacer = false;
+
+        template = "{{test}}";
+        result = Mark.up(template, {}, {replacer: 'replaced'});
+        expect(result).toEqual("replaced");
     });
 
     it("resolves object dot notation", function () {

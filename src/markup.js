@@ -16,6 +16,9 @@ var Mark = {
     // Collapse white space between HTML elements in the resulting string.
     compact: false,
 
+    // if false, replace undefined tags with ???. If true, the original tag. If string, the string.
+    replacer: false,
+
     // Shallow-copy an object.
     _copy: function (a, b) {
         b = b || [];
@@ -144,6 +147,20 @@ var Mark = {
 
         // Return the block, e.g. "{{foo}}bar{{/foo}}" and its child, e.g. "bar".
         return [tpl.substring(a, d), tpl.substring(b, c)];
+    },
+
+    _getResult: function(tag,result) {
+        if (result !== undefined) {
+            return result;
+        } else {
+            if (this.replacer === true) {
+                return tag;
+            } else if (typeof this.replacer === "string") {
+                return this.replacer;
+            } else {
+                return '???';
+            }
+        }
     }
 };
 
@@ -205,6 +222,10 @@ Mark.up = function (template, context, options) {
     // Optionally collapse white space.
     if (options.compact !== undefined) {
         this.compact = options.compact;
+    }
+
+    if (options.replacer) {
+        this.replacer = options.replacer;
     }
 
     // Loop through tags, e.g. {{a}}, {{b}}, {{c}}, {{/c}}.
@@ -317,7 +338,7 @@ Mark.up = function (template, context, options) {
         }
 
         // Replace the tag, e.g. "{{name}}", with the result, e.g. "Adam".
-        template = template.replace(tag, result === undefined ? "???" : result);
+        template = template.replace(tag, this._getResult(tag,result));
     }
 
     return this.compact ? template.replace(/>\s+</g, "><") : template;
